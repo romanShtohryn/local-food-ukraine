@@ -1,0 +1,191 @@
+:root {
+    --bg: #fff;
+    --text: #222;
+    --muted: #666;
+    --primary: #2a7e3b;
+    --border: #e5e5e5;
+  }
+  
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    color: var(--text);
+    font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background: var(--bg);
+  }
+  
+  button {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 14px;
+    cursor: pointer; /* робить курсор "палець" */
+    transition: background 0.2s, transform 0.1s;
+  }
+  
+  button:hover {
+    background: #e0e0e0;
+  }
+  
+  button:active {
+    transform: scale(0.97);
+  }
+
+  button.primary {
+    background: #2a7e3b;
+    color: #fff;
+    border-color: #2a7e3b;
+  }
+  
+  button.primary:hover {
+    background: #256c34;
+  }
+
+  button.secondary {
+    background: #f5f5f5;
+    color: #222;
+  }
+  
+  button.secondary:hover {
+    background: #e0e0e0;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: saturate(180%) blur(6px);
+  }
+  
+  .brand {
+    font-weight: 600;
+    white-space: nowrap;
+    color: #2a7e3b;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .controls input, .controls select, .controls button {
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 10px;
+    background: #fff;
+  }
+  
+  .controls input {
+    flex: 1;
+    min-width: 220px;
+  }
+  
+  .controls .primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  
+  #map {
+    height: calc(100vh - 52px);
+    width: 100%;
+  }
+  
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.35);
+    z-index: 2000;
+  }
+  
+  .modal[aria-hidden="false"] { display: flex; }
+  
+  .modal-dialog {
+    width: 96%;
+    max-width: 560px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .modal-body { padding: 16px; }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .form-row input, .form-row select {
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 10px;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  
+  .hint {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .search-message {
+    text-align: center;
+    margin: 8px 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 3000;
+  }
+  .toast.show {
+    opacity: 1;
+  }
+  

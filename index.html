@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Local Food Ukraine</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <img src="logo.png" alt="logo" style="height:36px; margin-right:8px;" />
+    <div class="brand">Local Food Ukraine</div>
+    <div class="controls">
+      <input id="searchInput" type="search" placeholder="Пошук: ім’я, продукція, населений пункт..." />
+      <select id="categoryFilter">
+        <option value="">Всі категорії</option>
+        <option value="молоко">Молоко</option>
+        <option value="м’ясо">М’ясо</option>
+        <option value="мед">Мед</option>
+        <option value="овочі">Овочі</option>
+        <option value="фрукти">Фрукти</option>
+        <option value="яйця">Яйця</option>
+      </select>
+      <button id="locateBtn">Моє місцезнаходження</button>
+      <button id="addSellerBtn" class="primary">Додати продавця</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="map"></div>
+  </main>
+
+  <!-- Modal: Add seller -->
+  <div class="modal" id="addSellerModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2>Додати продавця</h2>
+        <button id="closeModal" aria-label="Закрити">✖</button>
+      </div>
+      <div class="modal-body">
+        <form id="sellerForm">
+          <div class="form-row">
+            <label for="sellerName">Ім’я</label>
+            <input id="sellerName" type="text" required />
+          </div>
+          <div class="form-row">
+            <label for="sellerProduct">Продукція</label>
+            <input id="sellerProduct" type="text" placeholder="молоко, мед, овочі..." required />
+          </div>
+          <div class="form-row">
+            <label for="sellerCategory">Категорія</label>
+            <select id="sellerCategory" required>
+              <option value="">—</option>
+              <option value="молоко">Молоко</option>
+              <option value="м’ясо">М’ясо</option>
+              <option value="мед">Мед</option>
+              <option value="овочі">Овочі</option>
+              <option value="фрукти">Фрукти</option>
+              <option value="яйця">Яйця</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="sellerPrice">Ціни/діапазон</label>
+            <input id="sellerPrice" type="text" placeholder="від 60 грн/л, 200 грн/кг" />
+          </div>
+          <div class="form-row">
+            <label for="sellerContact">Контакт</label>
+            <input id="sellerContact" type="text" placeholder="Тел: 050..., Telegram: @..." required />
+          </div>
+          <div class="form-row">
+            <label for="sellerCity">Населений пункт</label>
+            <input id="sellerCity" type="text" placeholder="Івано-Франківськ, с. Хриплин..." />
+          </div>
+          <div class="form-row">
+            <label for="sellerLat">Широта</label>
+            <input id="sellerLat" type="number" step="0.000001" placeholder="48.9226" required />
+          </div>
+          <div class="form-row">
+            <label for="sellerLng">Довгота</label>
+            <input id="sellerLng" type="number" step="0.000001" placeholder="24.7111" required />
+          </div>
+          <div class="form-actions">
+            <button type="button" id="useMyLocation" class="secondary">📍 Підставити мою геолокацію</button>
+            <button type="submit" class="primary">Зберегти</button>
+          </div>          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+<div id="toast" class="toast"></div>
+</html>
