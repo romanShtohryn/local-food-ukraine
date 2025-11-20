@@ -1,6 +1,11 @@
 import { getCategoryIcon, getCategoryColor } from '../utils/contactHelpers'
+import AdvertisementSpace from './AdvertisementSpace'
 
-export default function Sidebar({ sellers, onSellerClick, selectedSeller }) {
+export default function Sidebar({ sellers, onSellerClick, selectedSeller, showDetails, selectedSellerDetails, onBackToList }) {
+  if (showDetails && selectedSellerDetails) {
+    return null
+  }
+
   if (sellers.length === 0) {
     return (
       <aside className="sidebar">
@@ -13,6 +18,7 @@ export default function Sidebar({ sellers, onSellerClick, selectedSeller }) {
           <p>Продавців не знайдено</p>
           <span>Спробуйте змінити фільтри або пошуковий запит</span>
         </div>
+        <AdvertisementSpace position="sidebar" />
       </aside>
     )
   }
@@ -55,6 +61,7 @@ export default function Sidebar({ sellers, onSellerClick, selectedSeller }) {
           </div>
         ))}
       </div>
+      <AdvertisementSpace position="sidebar" />
     </aside>
   )
 }

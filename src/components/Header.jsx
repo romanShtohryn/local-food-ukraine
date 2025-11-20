@@ -10,7 +10,7 @@ const CATEGORIES = [
   { value: 'яйця', label: 'Яйця' }
 ]
 
-export default function Header({ onSearch, onLocate, onAddSeller }) {
+export default function Header({ onSearch, onLocate, onAddSeller, user, onAccount }) {
   const [searchText, setSearchText] = useState('')
   const [category, setCategory] = useState('')
 
@@ -71,9 +71,23 @@ export default function Header({ onSearch, onLocate, onAddSeller }) {
             <circle cx="12" cy="12" r="10" />
           </svg>
         </button>
-        <button onClick={onAddSeller} className="btn-primary">
-          Додати продавця
-        </button>
+
+        {user ? (
+          <>
+            <button onClick={onAddSeller} className="btn-primary">
+              Додати продавця
+            </button>
+            <button onClick={onAccount} className="btn-icon" title="Мій акаунт">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </button>
+          </>
+        ) : (
+          <button onClick={onAccount} className="btn-primary">
+            Вхід / Реєстрація
+          </button>
+        )}
       </div>
     </header>
   )
