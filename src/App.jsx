@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
+import SellerDetails from './components/SellerDetails'
+import SettingsPage from './components/SettingsPage'
 import Map from './components/Map'
 import AddSellerModal from './components/AddSellerModal'
-import SellerDetails from './components/SellerDetails'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import AccountPage from './components/AccountPage'
+import WelcomeAd from './components/WelcomeAd'
+import UserMenu from './components/UserMenu'
 import { sellersService } from './services/sellersService'
 import { authService } from './services/authService'
 import './App.css'
@@ -25,11 +28,29 @@ function App() {
   const [authMode, setAuthMode] = useState('signin')
   const [showAuthPage, setShowAuthPage] = useState(false)
   const [showAccountPage, setShowAccountPage] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
+
+  const [theme, setTheme] = useState('light')
+  const [sidebarVisible, setSidebarVisible] = useState(true)
+  const [currentSidebarTab, setCurrentSidebarTab] = useState('sellers')
+  const [showWelcomeAd, setShowWelcomeAd] = useState(true)
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light'
+    setTheme(savedTheme)
+    document.documentElement.setAttribute('data-theme', savedTheme)
+
     initializeAuth()
     loadSellers()
   }, [])
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme)
+    localStorage.setItem('theme', newTheme)
+    document.documentElement.setAttribute('data-theme', newTheme)
+  }
 
   const initializeAuth = async () => {
     try {
@@ -63,6 +84,7 @@ function App() {
       setFilteredSellers(results)
       setSelectedSeller(null)
       setShowSellerDetails(false)
+      setCurrentSidebarTab('sellers')
     } catch (error) {
       console.error('Error searching sellers:', error)
     }
@@ -92,6 +114,7 @@ function App() {
         user_id: user?.id
       })
       await loadSellers()
+      setIsModalOpen(false)
     } catch (error) {
       console.error('Error adding seller:', error)
       throw error
@@ -118,6 +141,7 @@ function App() {
   const handleBackFromDetails = () => {
     setShowSellerDetails(false)
     setSelectedSeller(null)
+    setCurrentSidebarTab('sellers')
   }
 
   const handleSignIn = async (email, password) => {
@@ -152,18 +176,23 @@ function App() {
       setProfile(null)
       setShowAccountPage(false)
       setShowAuthPage(false)
+      setShowSettings(false)
+      setShowAbout(false)
+      setCurrentSidebarTab('sellers')
+      setShowUserMenu(false)
       await loadSellers()
     } catch (error) {
       console.error('Error signing out:', error)
     }
   }
 
-  const handleAuthClick = () => {
-    if (user) {
-      setShowAccountPage(true)
-    } else {
+  const handleBecomeSeller = () => {
+    if (!user) {
       setShowAuthPage(true)
       setAuthMode('signin')
+    } else {
+      setCurrentSidebarTab('become-seller')
+      setShowSellerDetails(false)
     }
   }
 
@@ -190,20 +219,54 @@ function App() {
         user={user}
         profile={profile}
         onSignOut={handleSignOut}
-        onBack={() => setShowAccountPage(false)}
+        onBack={() => {
+          setShowAccountPage(false)
+          setShowUserMenu(false)
+        }}
       />
     )
   }
 
   return (
-    <div className="app">
+    <div className="app" data-theme={theme}>
       <Header
         onSearch={handleSearch}
         onLocate={handleLocate}
-        onAddSeller={() => setIsModalOpen(true)}
         user={user}
-        onAccount={handleAuthClick}
+        onUserMenuClick={() => setShowUserMenu(!showUserMenu)}
+        showUserMenu={showUserMenu}
+        onMenuAction={() => {
+          setShowAuthPage(true)
+          setAuthMode('signin')
+        }}
       />
+
+      {showUserMenu && user && (
+        <UserMenu
+          user={user}
+          onAccount={() => {
+            setShowAccountPage(true)
+            setShowUserMenu(false)
+          }}
+          onBecomeSeller={() => {
+            setCurrentSidebarTab('become-seller')
+            setShowSellerDetails(false)
+            setShowUserMenu(false)
+          }}
+          onSettings={() => {
+            setShowSettings(true)
+            setShowUserMenu(false)
+          }}
+          onAbout={() => {
+            setCurrentSidebarTab('about')
+            setShowSellerDetails(false)
+            setShowUserMenu(false)
+          }}
+          onSignOut={handleSignOut}
+          onClose={() => setShowUserMenu(false)}
+        />
+      )}
+
       <main className="main-content">
         {showSellerDetails && selectedSeller ? (
           <div className="sidebar-container">
@@ -215,28 +278,55 @@ function App() {
               onEditStart={() => {}}
             />
           </div>
-        ) : (
+        ) : showSettings ? (
+          <SettingsPage
+            theme={theme}
+            onThemeChange={handleThemeChange}
+            onBack={() => setShowSettings(false)}
+          />
+        ) : sidebarVisible ? (
           <Sidebar
             sellers={filteredSellers}
             onSellerClick={handleSellerClick}
             selectedSeller={selectedSeller}
-            showDetails={showSellerDetails}
-            selectedSellerDetails={selectedSeller}
-            onBackToList={handleBackFromDetails}
+            currentTab={currentSidebarTab}
+            onTabChange={setCurrentSidebarTab}
+            onBecomeSeller={handleBecomeSeller}
           />
-        )}
+        ) : null}
+
         <Map
           sellers={filteredSellers}
           selectedSeller={selectedSeller}
           onSellerSelect={handleSellerClick}
+          mapCenter={mapCenter}
         />
+
+        {sidebarVisible && (
+          <button className="toggle-sidebar" onClick={() => setSidebarVisible(false)} title="Сховати список">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15 18l-6-6 6-6" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
+
+        {!sidebarVisible && (
+          <button className="toggle-sidebar show" onClick={() => setSidebarVisible(true)} title="Показати список">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 18l6-6-6-6" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
       </main>
+
       <AddSellerModal
         isOpen={isModalOpen && user}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleAddSeller}
         mapCenter={mapCenter}
       />
+
+      {showWelcomeAd && <WelcomeAd onClose={() => setShowWelcomeAd(false)} />}
     </div>
   )
 }

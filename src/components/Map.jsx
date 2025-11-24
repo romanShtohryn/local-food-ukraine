@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
-export default function Map({ sellers, selectedSeller, onSellerSelect }) {
+export default function Map({ sellers, selectedSeller, onSellerSelect, mapCenter }) {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
@@ -64,33 +64,6 @@ export default function Map({ sellers, selectedSeller, onSellerSelect }) {
         title: seller.name
       })
 
-      const phone = extractPhone(seller.contact)
-      const messengerLink = makeMessengerLink(seller.contact)
-
-      const popupContent = `
-        <div class="map-popup">
-          <div class="popup-header">
-            <h3>${seller.name}</h3>
-            <span class="popup-category">${seller.category}</span>
-          </div>
-          <div class="popup-body">
-            <p class="popup-product">${seller.product}</p>
-            ${seller.price ? `<p class="popup-price">${seller.price}</p>` : ''}
-            ${seller.city ? `<p class="popup-city">${seller.city}</p>` : ''}
-          </div>
-          <div class="popup-actions">
-            ${phone ? `<a href="tel:${phone}" class="popup-btn popup-btn-call">Дзвінок</a>` : ''}
-            ${messengerLink !== '#' ? `<a href="${messengerLink}" target="_blank" class="popup-btn popup-btn-message">Написати</a>` : ''}
-          </div>
-          <div class="popup-contact">${seller.contact}</div>
-        </div>
-      `
-
-      marker.bindPopup(popupContent, {
-        maxWidth: 300,
-        className: 'custom-popup'
-      })
-
       marker.on('click', () => {
         onSellerSelect(seller)
       })
@@ -106,17 +79,14 @@ export default function Map({ sellers, selectedSeller, onSellerSelect }) {
   }, [sellers, onSellerSelect])
 
   useEffect(() => {
+    if (mapCenter && mapInstanceRef.current) {
+      mapInstanceRef.current.setView(mapCenter, 15)
+    }
+  }, [mapCenter])
+
+  useEffect(() => {
     if (selectedSeller && mapInstanceRef.current) {
       mapInstanceRef.current.setView([selectedSeller.lat, selectedSeller.lng], 14)
-
-      const marker = markersRef.current.find(m => {
-        const latLng = m.getLatLng()
-        return latLng.lat === selectedSeller.lat && latLng.lng === selectedSeller.lng
-      })
-
-      if (marker) {
-        marker.openPopup()
-      }
     }
   }, [selectedSeller])
 
