@@ -42,27 +42,27 @@ function App() {
     setTheme(savedTheme)
     document.documentElement.setAttribute('data-theme', savedTheme)
 
-    initializeAuth()
     loadSellers()
-  }, [])
 
+    // слухаємо зміни авторизації
+    const subscription = authService.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUser(session.user)
+        const userProfile = await authService.getUserProfile(session.user.id)
+        setProfile(userProfile)
+      } else {
+        setUser(null)
+        setProfile(null)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+  
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
-  }
-
-  const initializeAuth = async () => {
-    try {
-      const currentUser = await authService.getCurrentUser()
-      if (currentUser) {
-        setUser(currentUser)
-        const userProfile = await authService.getUserProfile(currentUser.id)
-        setProfile(userProfile)
-      }
-    } catch (error) {
-      console.error('Error initializing auth:', error)
-    }
   }
 
   const loadSellers = async () => {
@@ -152,7 +152,7 @@ function App() {
       setProfile(userProfile)
       setShowAuthPage(false)
     } catch (error) {
-      throw error
+      console.error('Sign in error:', error)
     }
   }
 
@@ -165,7 +165,7 @@ function App() {
       setShowAuthPage(false)
       setAuthMode('signin')
     } catch (error) {
-      throw error
+      console.error('Sign up error:', error)
     }
   }
 
@@ -240,9 +240,10 @@ function App() {
           setAuthMode('signin')
         }}
       />
-
+  
       {showUserMenu && user && (
         <UserMenu
+          isOpen={showUserMenu}          // ДОДАНО: керування відкриттям
           user={user}
           onAccount={() => {
             setShowAccountPage(true)
@@ -303,17 +304,39 @@ function App() {
         />
 
         {sidebarVisible && (
-          <button className="toggle-sidebar" onClick={() => setSidebarVisible(false)} title="Сховати список">
+          <button
+            className="toggle-sidebar"
+            onClick={() => setSidebarVisible(false)}
+            title="Сховати список"
+          >
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M15 18l-6-6 6-6" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M15 18l-6-6 6-6"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         )}
 
         {!sidebarVisible && (
-          <button className="toggle-sidebar show" onClick={() => setSidebarVisible(true)} title="Показати список">
+          <button
+            className="toggle-sidebar show"
+            onClick={() => setSidebarVisible(true)}
+            title="Показати список"
+          >
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 18l6-6-6-6" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M9 18l6-6-6-6"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         )}

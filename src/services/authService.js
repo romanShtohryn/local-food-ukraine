@@ -2,26 +2,23 @@ import { supabase } from './supabase'
 
 export const authService = {
   async signUp(email, password, fullName) {
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password
     })
-
     if (signUpError) throw signUpError
+
+    const user = data.user
 
     const { data: profileData, error: profileError } = await supabase
       .from('user_profiles')
-      .insert([{
-        id: authData.user.id,
-        email,
-        full_name: fullName
-      }])
+      .insert([{ id: user.id, email, full_name: fullName }])
       .select()
       .single()
 
     if (profileError) throw profileError
 
-    return { user: authData.user, profile: profileData }
+    return { user, profile: profileData }
   },
 
   async signIn(email, password) {
@@ -29,9 +26,8 @@ export const authService = {
       email,
       password
     })
-
     if (error) throw error
-    return data
+    return data.user
   },
 
   async signOut() {
@@ -95,11 +91,12 @@ export const authService = {
     if (delError) throw delError
   },
 
-  async onAuthStateChange(callback) {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+
+  onAuthStateChange(callback) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       callback(event, session)
     })
-
-    return data.subscription
+    return subscription
   }
+  
 }

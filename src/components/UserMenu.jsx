@@ -1,10 +1,8 @@
-import { useState } from 'react'
+import React from 'react'
 
-export default function UserMenu({ user, onAccount, onBecomeSeller, onSettings, onAbout, onSignOut, onClose }) {
-  const [isOpen, setIsOpen] = useState(false)
+export default function UserMenu({ isOpen, user, onAccount, onBecomeSeller, onSettings, onAbout, onSignOut, onClose }) {
 
   const handleMenuClose = () => {
-    setIsOpen(false)
     onClose()
   }
 
@@ -52,7 +50,7 @@ export default function UserMenu({ user, onAccount, onBecomeSeller, onSettings, 
 
         <button className="user-menu-item" onClick={handleAbout}>
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2в6zm0-8h-2V7h2v2z"/>
           </svg>
           Про нас
         </button>
@@ -68,7 +66,7 @@ export default function UserMenu({ user, onAccount, onBecomeSeller, onSettings, 
 
         <button className="user-menu-item user-menu-signout" onClick={handleSignOut}>
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5з"/>
           </svg>
           Вихід
         </button>
