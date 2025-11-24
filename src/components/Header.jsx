@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/logo.png'
 
 const CATEGORIES = [
   { value: '', label: 'Всі категорії' },
@@ -34,7 +35,7 @@ export default function Header({ onSearch, onLocate, user, onUserMenuClick, show
   return (
     <header className="header">
       <div className="header-brand">
-        <img src="/logo.png" alt="Local Food Ukraine" className="logo" />
+        <img src={logo} alt="Local Food Ukraine" className="logo" />
         <h1 className="brand-name">Local Food Ukraine</h1>
       </div>
 

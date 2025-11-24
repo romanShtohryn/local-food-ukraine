@@ -49,7 +49,7 @@ export default function SignUp({ onSignUp, onSwitchToSignIn }) {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <img src="/logo.png" alt="Local Food Ukraine" className="auth-logo" />
+          <img src={logo} alt="Local Food Ukraine" className="auth-logo" />
           <h1>Local Food Ukraine</h1>
           <p className="auth-subtitle">Карта місцевих фермерів</p>
         </div>

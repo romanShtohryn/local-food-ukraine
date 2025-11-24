@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/logo.png'
 
 export default function SignIn({ onSignIn, onSwitchToSignUp }) {
   const [email, setEmail] = useState('')
@@ -24,7 +25,7 @@ export default function SignIn({ onSignIn, onSwitchToSignUp }) {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <img src="/logo.png" alt="Local Food Ukraine" className="auth-logo" />
+          <img src={logo} alt="Local Food Ukraine" className="auth-logo" />
           <h1>Local Food Ukraine</h1>
           <p className="auth-subtitle">Карта місцевих фермерів</p>
         </div>
